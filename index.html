@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagination Example</title>
+</head>
+<body>
+    <h1>Data Pagination</h1>
+    <div id="demo"></div>
+    <button id="prev">Previous</button>
+    <button id="next">Next</button>
+
+    <script>
+        let currentOffset = 0;
+        const limit = 1;
+
+        // Function to Fetch Data
+        async function fetchData(offset) {
+            try {
+                let response = await fetch(`http://localhost:3000/pagination?limit=${limit}&offset=${offset}`);
+                let api_data = await response.json();
+                // console.log(api_data);
+                // console.log(api_data.data);
+                
+                // Update HTML
+                let demo = document.getElementById("demo");
+                if (api_data.data.length> 0) {
+                    demo.innerHTML = `<pre>${JSON.stringify(api_data.data, null, 2)}</pre>`;
+                } else {
+                    demo.innerHTML = "No more data to display.";
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        // Initial Fetch
+        fetchData(currentOffset);
+
+        // Button Listeners
+        document.getElementById("prev").addEventListener("click", () => {
+            if (currentOffset > 0) {
+                currentOffset--;
+                fetchData(currentOffset);
+            }
+        });
+
+        document.getElementById("next").addEventListener("click", () => {
+            currentOffset++;
+            fetchData(currentOffset);
+        });
+    </script>
+</body>
+</html>
